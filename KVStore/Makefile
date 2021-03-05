@@ -6,10 +6,10 @@ CFLAGS=-g
 
 BINS=tst dbTst
 
-all:	$(BINS)
-
 kvs.o:	kvs.c kvs.h
 	$(CC) $(CFLAGS) -c kvs.c -o kvs.o
+
+all:	$(BINS)
 
 tst:	tst.c kvs.o
 	$(CC) $(CFLAGS) tst.c kvs.o -o tst
