@@ -33,4 +33,6 @@ void interpPacket(uint8_t *ptr);
 
 void mkBoolCmd(char *key, bool state, uint8_t *out);
 void mkByteCmd(char *key, uint8_t state, uint8_t *out);
+void mkIntCmd(char *key, uint32_t state, uint8_t *out);
+void mkStringCmd(char *key, char *state, uint8_t *out);
 
