@@ -104,7 +104,7 @@ uint8_t getByte(KVSstore *s, char *name) {
 }
 
 
-void *get(KVSstore *s, char *name) {
+const void *get(KVSstore *s, char *name) {
     void *res = kvs_get(s, name);
 
     return res;
@@ -114,10 +114,8 @@ int main() {
     KVSstore *store = kvs_create(strcmp);
     KVSpair *p; 
 
-    struct data *fred = calloc(1,sizeof(struct data));
-    struct data *bill = NULL;
-
-    fred->type = BOOL;
+    const struct data *fred = NULL;
+    const struct data *bill = NULL;
 
     set(store,"FRED", fred);
 
