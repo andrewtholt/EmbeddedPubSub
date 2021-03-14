@@ -1,0 +1,8 @@
+*.o
+*.swp
+tstProto 
+tstKVStore
+tstDump
+dbgTst
+
+cscope.out

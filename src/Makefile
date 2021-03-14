@@ -2,8 +2,9 @@
 BINS=tstDump
 CFLAGS=-g
 CC=gcc
+CPP=g++
 
-BINS=tstProto tstKVStore tstDump
+BINS=tstProto tstKVStore tstDump dbgTst
 
 OBJ=proto.o dump.o kvs.o db.o # espDb.o
 
@@ -17,9 +18,11 @@ dump.o:	dump.c
 tstDump:	tstDump.c dump.o
 	$(CC) $(CFLAGS) tstDump.c dump.o -o tstDump
 
-tstProto:	tstProto.c proto.o dump.o Makefile
+tstProto:	tstProto.c proto.o dump.o Makefile kvs.o
 	$(CC) $(CFLAGS) tstProto.c proto.o dump.o kvs.o -o tstProto
 
+dbgTst:	dbgTst.c kvs.o
+	$(CC) $(CFLAGS) -DDEBUG dbgTst.c kvs.o -o dbgTst
 
 help:
 	@echo "Help"
@@ -43,8 +46,11 @@ db.o:	db.cpp db.h
 espDb.o:	espDb.cpp espDb.h
 	$(CPP) $(CFLAGS) -c espDb.cpp -o espDb.o
 
-dbTst:	dbTst.cpp espDb.o db.o kvs.o espDB.o
-	$(CPP) $(CFLAGS) dbTst.cpp kvs.o db.o -o dbTst
+dbTst:	dbTst.cpp espDb.o db.o kvs.o
+	$(CPP) $(CFLAGS) dbTst.cpp kvs.o espDb.o  db.o -o dbTst
 
 clean:
 	rm -f *.o $(BINS) $(OBJS)
+
+
+
