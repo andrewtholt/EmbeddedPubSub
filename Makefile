@@ -8,9 +8,11 @@ HDR=Protocol/proto.c Dump/dump.c
 tst:	tst.c $(HDR) Protocol/proto.c Dump/dump.c Makefile
 	@make -C Dump
 	@make -C Protocol
-	$(CC) $(CFLAGS) tst.c Protocol/proto.o Dump/dump.o -o tst
+	@make -C KVStore
+	$(CC) $(CFLAGS) tst.c Protocol/proto.o Dump/dump.o KVStore/kvs.o -o tst
 
 clean:
 	rm -f $(BINS) 
-	make -C ./Protocol clean
-	make -C ./Dump clean
+	@make -C ./Protocol clean
+	@make -C ./Dump clean
+	@make -C ./KVStore clean

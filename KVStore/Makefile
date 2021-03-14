@@ -4,15 +4,15 @@ CPP=g++
 
 CFLAGS=-g
 
-BINS=tst dbTst
+BINS=tstKVStore dbTst
 
 kvs.o:	kvs.c kvs.h
 	$(CC) $(CFLAGS) -c kvs.c -o kvs.o
 
 all:	$(BINS)
 
-tst:	tst.c kvs.o
-	$(CC) $(CFLAGS) tst.c kvs.o -o tst
+tstKVStore:	tstKVStore.c kvs.o
+	$(CC) $(CFLAGS) tstKVStore.c kvs.o -o tstKVStore
 
 db.o:	db.cpp db.h
 	$(CPP) $(CFLAGS) -c db.cpp -o db.o

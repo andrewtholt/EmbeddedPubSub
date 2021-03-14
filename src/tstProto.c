@@ -2,9 +2,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Protocol/proto.h"
-#include "Dump/dump.h"
-#include "KVStore/kvs.h"
+#include "proto.h"
+#include "dump.h"
+#include "kvs.h"
 
 KVSstore *store = NULL;
 
