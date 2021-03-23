@@ -6,3 +6,4 @@ tstDump
 dbgTst
 
 cscope.out
+*.o

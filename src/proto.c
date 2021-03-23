@@ -3,8 +3,41 @@
 #include <stdint.h>
 #include <string.h>
 #include "../KVStore/kvs.h"
+#include "pubSub.h"
 
 extern KVSstore *store;
+
+char *printCmd(enum cmd c) {
+
+    char res[6] = {0};
+
+    switch(c) {
+        case NOP:
+            strcpy(res,"NOP");
+            break;
+        case GET:
+            strcpy(res,"GET");
+            break;
+        case SET:
+            strcpy(res,"SET");
+            break;
+        case SUB:
+            strcpy(res,"SUB");
+            break;
+        case UNSUB:
+            strcpy(res,"UNSUB");
+            break;
+        case PING:
+            strcpy(res,"PING");
+            break;
+        case EXIT:
+            strcpy(res,"NEXT");
+            break;
+        default:
+            strcpy(res,"WHAT?");
+            break;
+    }
+}
 
 void mkStringCmd(char *key, char *state, uint8_t *out) {
     uint8_t size=0;
@@ -76,21 +109,26 @@ void mkByteCmd(char *key, uint8_t state, uint8_t *out) {
 }
 
 
-void mkBoolCmd(char *key, bool state, uint8_t *out) {
+void mkBoolCmd(enum cmd c, char *key, bool state, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
 
     memset(out,0,MAX_PACKET);
 
-    out[idx++] = SET;
+    out[idx++] = c;
     out[idx++] = strlen(key);
 
     memcpy(&out[idx], key, strlen(key));
     idx += strlen(key);
-    out[idx++] = 2;
-    out[idx++] = BOOL;
 
-    out[idx] = (state == true) ? 1 :0 ;
+    if (c == SET) {
+        out[idx++] = 2;
+        out[idx++] = BOOL;
+
+        out[idx] = (state == true) ? 1 :0 ;
+    } else {
+        idx--;
+    }
 
     printf("len = %d\n", idx);
 
@@ -98,7 +136,52 @@ void mkBoolCmd(char *key, bool state, uint8_t *out) {
 
 }
 
-void interpPacket(uint8_t *ptr) {
+// 
+// If you know that this command has no return (SET, EXIT) then out_ptr may be NULL
+// Since it will not be referenced
+//
+void interpPacket(uint8_t *in_ptr, uint8_t *out_ptr) {
+
+    uint8_t idx = 0;
+    uint8_t packetLen = in_ptr[idx++];
+    uint8_t cmd = in_ptr[idx++];
+
+    printf("Command  :%d %s\n",cmd,printCmd(cmd));
+
+    switch(cmd) {
+        case SET:
+            interpSetPacket(in_ptr);
+            break;
+        case GET:
+            break;
+    }
+//    printf("data type:%d\n",dataType);
+}
+
+void interpGetPacket(uint8_t *in_ptr, uint8_t *out_ptr) {
+
+    uint8_t idx = 0;
+    uint8_t packetLen = in_ptr[idx++];
+    uint8_t cmd = in_ptr[idx++];
+
+    uint8_t key[8] = { 0 };
+
+    printf("Command  :%d %s\n",cmd,printCmd(cmd));
+
+    if ( cmd != GET) {
+        return;
+    }
+
+    printf("idx=%d\n", idx);
+
+    uint8_t keyLength = in_ptr[idx++];
+
+    memcpy(key, &in_ptr[idx], keyLength);
+
+    idx += keyLength;
+}
+
+void interpSetPacket(uint8_t *ptr) {
     uint8_t idx = 0;
     uint8_t packetLen = ptr[idx++];
     uint8_t cmd = ptr[idx++];
@@ -125,12 +208,20 @@ void interpPacket(uint8_t *ptr) {
 
     uint8_t dataType = ptr[idx++];
 
-    printf("data type %d\n",dataType);
+    printf("Command  :%d %s\n",cmd,printCmd(cmd));
+    printf("data type:%d\n",dataType);
 
     // TODO: Each case would write to the database not yet built.
     switch(dataType) {
         case(BOOL):
-            printf("Set bool %s to %d\n",key, ptr[idx]);
+            {
+                printf("Set bool %s to %d\n",key, ptr[idx]);
+
+                bool state = (ptr[idx] != 0) ? true : false;
+
+                setBoolean(store, key, state);
+
+            }
             break;
         case(BYTE):
             printf("Set byte %s to 0x%02x\n",key, ptr[idx]);
