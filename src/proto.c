@@ -55,6 +55,7 @@ void mkGetStringCmd(char *key, uint8_t *out) {
     out[idx] = STRING;
     out[0] = idx;
 }
+
 void mkSetStringCmd(char *key, char *state, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
@@ -62,6 +63,7 @@ void mkSetStringCmd(char *key, char *state, uint8_t *out) {
     memset(out,0,MAX_PACKET);
 
     out[idx++] = SET;
+    out[idx++] = 0; // Sender N/A for set
     out[idx++] = strlen(key);
 
     memcpy(&out[idx], key, strlen(key));
@@ -104,6 +106,7 @@ void mkSetIntCmd(char *key, uint32_t state, uint8_t *out) {
     memset(out,0,MAX_PACKET);
 
     out[idx++] = SET;
+    out[idx++] = 0; // Sender N/A for set
     out[idx++] = strlen(key);
     memcpy(&out[idx], key, strlen(key));
 
@@ -143,6 +146,7 @@ void mkSetByteCmd(char *key, uint8_t state, uint8_t *out) {
     memset(out,0,MAX_PACKET);
 
     out[idx++] = SET;
+    out[idx++] = 0; // Sender N/A for set
     out[idx++] = strlen(key);
     memcpy(&out[idx], key, strlen(key));
     idx += strlen(key);
@@ -179,6 +183,7 @@ void mkSetBoolCmd(char *key, bool state, uint8_t *out) {
     memset(out,0,MAX_PACKET);
 
     out[idx++] = SET ;
+    out[idx++] = 0; // Sender N/A for set
     out[idx++] = strlen(key);
 
     memcpy(&out[idx], key, strlen(key));
