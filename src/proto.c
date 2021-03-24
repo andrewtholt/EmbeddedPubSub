@@ -39,7 +39,7 @@ char *printCmd(enum cmd c) {
     }
 }
 
-void mkStringCmd(char *key, char *state, uint8_t *out) {
+void mkSetStringCmd(char *key, char *state, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
 
@@ -65,7 +65,7 @@ void mkStringCmd(char *key, char *state, uint8_t *out) {
     out[0] = idx;
 }
 
-void mkIntCmd(char *key, uint32_t state, uint8_t *out) {
+void mkSetIntCmd(char *key, uint32_t state, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
 
@@ -88,7 +88,7 @@ void mkIntCmd(char *key, uint32_t state, uint8_t *out) {
     out[0] = idx;
 }
 
-void mkByteCmd(char *key, uint8_t state, uint8_t *out) {
+void mkSetByteCmd(char *key, uint8_t state, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
 
@@ -108,27 +108,38 @@ void mkByteCmd(char *key, uint8_t state, uint8_t *out) {
     out[0] = idx;
 }
 
-
-void mkBoolCmd(enum cmd c, char *key, bool state, uint8_t *out) {
+void mkGetBoolCmd(char *key, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
 
     memset(out,0,MAX_PACKET);
 
-    out[idx++] = c;
+    out[idx++] = GET;
+    out[idx++] = strlen(key);
+
+    memcpy(&out[idx], key, strlen(key));
+    idx += strlen(key);
+    out[idx] = BOOL;
+
+    out[0] = idx;
+}
+
+void mkSetBoolCmd(char *key, bool state, uint8_t *out) {
+    uint8_t size=0;
+    uint8_t idx=1;
+
+    memset(out,0,MAX_PACKET);
+
+    out[idx++] = SET ;
     out[idx++] = strlen(key);
 
     memcpy(&out[idx], key, strlen(key));
     idx += strlen(key);
 
-    if (c == SET) {
-        out[idx++] = 2;
-        out[idx++] = BOOL;
+    out[idx++] = 2;
+    out[idx++] = BOOL;
 
-        out[idx] = (state == true) ? 1 :0 ;
-    } else {
-        idx--;
-    }
+    out[idx] = (state == true) ? 1 :0 ;
 
     printf("len = %d\n", idx);
 

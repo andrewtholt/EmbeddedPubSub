@@ -17,20 +17,20 @@ int main() {
     uint8_t  inPacket[MAX_PACKET] = { 0 };
 
     printf("Bool\n");
-    mkBoolCmd(SET,"LED", true, outPacket);
+    mkSetBoolCmd("LED", true, outPacket);
     dump(outPacket, 32);
 
     interpPacket(outPacket, inPacket);
     dump(outPacket, 32);
 
-    printf("Bool\n");
-    mkBoolCmd(GET,"LED", true, outPacket);
+    printf("Get Bool\n");
+    mkGetBoolCmd("LED", outPacket);
     dump(outPacket, 32);
 
     printf("===================================\n");
 
     printf("Byte\n");
-    mkByteCmd("FRED", 0xab, outPacket);
+    mkSetByteCmd("FRED", 0xab, outPacket);
     dump(outPacket, 32);
 
     interpPacket(outPacket, inPacket);
@@ -38,7 +38,7 @@ int main() {
     printf("===================================\n");
 
     printf("Int\n");
-    mkIntCmd("BILLY", 0x123456, outPacket);
+    mkSetIntCmd("BILLY", 0x123456, outPacket);
     dump(outPacket, 32);
 
     interpPacket(outPacket, inPacket);
@@ -46,7 +46,7 @@ int main() {
     printf("===================================\n");
 
     printf("String\n");
-    mkStringCmd("WILLIAM", "Some data", outPacket);
+    mkSetStringCmd("WILLIAM", "Some data", outPacket);
     dump(outPacket, 32);
 
     interpPacket(outPacket, inPacket);
