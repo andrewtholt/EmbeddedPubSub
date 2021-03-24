@@ -39,13 +39,14 @@ char *printCmd(enum cmd c) {
     }
 }
 
-void mkGetStringCmd(char *key, uint8_t *out) {
+void mkGetStringCmd(uint8_t sender, char *key, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
 
     memset(out,0,MAX_PACKET);
 
     out[idx++] = SET;
+    out[idx++] = sender ;
     out[idx++] = strlen(key);
 
     memcpy(&out[idx], key, strlen(key));
@@ -83,13 +84,14 @@ void mkSetStringCmd(char *key, char *state, uint8_t *out) {
     out[0] = idx;
 }
 
-void mkGetIntCmd(char *key, uint8_t *out) {
+void mkGetIntCmd(uint8_t sender, char *key, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
 
     memset(out,0,MAX_PACKET);
 
     out[idx++] = SET;
+    out[idx++] = sender;
     out[idx++] = strlen(key);
     memcpy(&out[idx], key, strlen(key));
 
@@ -123,13 +125,14 @@ void mkSetIntCmd(char *key, uint32_t state, uint8_t *out) {
     out[0] = idx;
 }
 
-void mkGetByteCmd(char *key, uint8_t *out) {
+void mkGetByteCmd(uint8_t sender, char *key, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
 
     memset(out,0,MAX_PACKET);
 
     out[idx++] = SET;
+    out[idx++] = sender;
     out[idx++] = strlen(key);
     memcpy(&out[idx], key, strlen(key));
     idx += strlen(key);
@@ -160,13 +163,14 @@ void mkSetByteCmd(char *key, uint8_t state, uint8_t *out) {
     out[0] = idx;
 }
 
-void mkGetBoolCmd(char *key, uint8_t *out) {
+void mkGetBoolCmd(uint8_t sender,char *key, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
 
     memset(out,0,MAX_PACKET);
 
     out[idx++] = GET;
+    out[idx++] = sender;
     out[idx++] = strlen(key);
 
     memcpy(&out[idx], key, strlen(key));

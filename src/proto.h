@@ -32,15 +32,15 @@ enum ptypes {
 void interpPacket(uint8_t *in_ptr, uint8_t *out_ptr);
 void interpSetPacket(uint8_t *ptr);
 
-void mkGetBoolCmd(char *key, uint8_t *out);
+void mkGetBoolCmd(uint8_t sender, char *key, uint8_t *out);
 void mkSetBoolCmd(char *key, bool state, uint8_t *out);
 
+void mkGetByteCmd(uint8_t sender, char *key, uint8_t *out) ;
 void mkSetByteCmd(char *key, uint8_t state, uint8_t *out);
-void mkGetByteCmd(char *key, uint8_t *out) ;
 
-void mkGetIntCmd(char *key, uint8_t *out) ;
+void mkGetIntCmd(uint8_t sender, char *key, uint8_t *out) ;
 void mkSetIntCmd(char *key, uint32_t state, uint8_t *out);
 
-void mkGetStringCmd(char *key, uint8_t *out);
+void mkGetStringCmd(uint8_t sender, char *key, uint8_t *out);
 void mkSetStringCmd(char *key, char *state, uint8_t *out);
 

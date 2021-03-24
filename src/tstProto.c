@@ -24,7 +24,7 @@ int main() {
     dump(outPacket, 32);
 
     printf("Get Bool\n");
-    mkGetBoolCmd("LED", outPacket);
+    mkGetBoolCmd(1,"LED", outPacket);
     dump(outPacket, 32);
 
     printf("===================================\n");
@@ -37,7 +37,7 @@ int main() {
     dump(outPacket, 32);
 
     printf("Get Byte\n");
-    mkGetByteCmd("FRED", outPacket);
+    mkGetByteCmd(2,"FRED", outPacket);
     dump(outPacket, 32);
     printf("===================================\n");
 
@@ -49,7 +49,7 @@ int main() {
     dump(outPacket, 32);
 
     printf("Get Int\n");
-    mkGetIntCmd("BILLY", outPacket);
+    mkGetIntCmd(3,"BILLY", outPacket);
     dump(outPacket, 32);
     printf("===================================\n");
 
@@ -60,8 +60,8 @@ int main() {
     interpPacket(outPacket, inPacket);
     dump(outPacket, 32);
 
-    printf("Set String\n");
-    mkGetStringCmd("WILLIAM", outPacket);
+    printf("Get String\n");
+    mkGetStringCmd(4, "WILLIAM", outPacket);
     dump(outPacket, 32);
     printf("===================================\n");
 
