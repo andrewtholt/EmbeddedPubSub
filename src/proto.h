@@ -36,8 +36,11 @@ void mkGetBoolCmd(char *key, uint8_t *out);
 void mkSetBoolCmd(char *key, bool state, uint8_t *out);
 
 void mkSetByteCmd(char *key, uint8_t state, uint8_t *out);
+void mkGetByteCmd(char *key, uint8_t *out) ;
 
+void mkGetIntCmd(char *key, uint8_t *out) ;
 void mkSetIntCmd(char *key, uint32_t state, uint8_t *out);
 
+void mkGetStringCmd(char *key, uint8_t *out);
 void mkSetStringCmd(char *key, char *state, uint8_t *out);
 

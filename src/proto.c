@@ -39,6 +39,22 @@ char *printCmd(enum cmd c) {
     }
 }
 
+void mkGetStringCmd(char *key, uint8_t *out) {
+    uint8_t size=0;
+    uint8_t idx=1;
+
+    memset(out,0,MAX_PACKET);
+
+    out[idx++] = SET;
+    out[idx++] = strlen(key);
+
+    memcpy(&out[idx], key, strlen(key));
+
+    idx += strlen(key);
+
+    out[idx] = STRING;
+    out[0] = idx;
+}
 void mkSetStringCmd(char *key, char *state, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
@@ -65,6 +81,22 @@ void mkSetStringCmd(char *key, char *state, uint8_t *out) {
     out[0] = idx;
 }
 
+void mkGetIntCmd(char *key, uint8_t *out) {
+    uint8_t size=0;
+    uint8_t idx=1;
+
+    memset(out,0,MAX_PACKET);
+
+    out[idx++] = SET;
+    out[idx++] = strlen(key);
+    memcpy(&out[idx], key, strlen(key));
+
+    idx += strlen(key);
+
+    out[idx] = INT;
+    out[0] = idx;
+}
+
 void mkSetIntCmd(char *key, uint32_t state, uint8_t *out) {
     uint8_t size=0;
     uint8_t idx=1;
@@ -85,6 +117,22 @@ void mkSetIntCmd(char *key, uint32_t state, uint8_t *out) {
     idx += sizeof(state);
 
     printf("len = %d\n", idx);
+    out[0] = idx;
+}
+
+void mkGetByteCmd(char *key, uint8_t *out) {
+    uint8_t size=0;
+    uint8_t idx=1;
+
+    memset(out,0,MAX_PACKET);
+
+    out[idx++] = SET;
+    out[idx++] = strlen(key);
+    memcpy(&out[idx], key, strlen(key));
+    idx += strlen(key);
+
+    out[idx] = BYTE;
+
     out[0] = idx;
 }
 
