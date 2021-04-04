@@ -118,7 +118,7 @@ int main() {
     KVSstore *store = kvs_create(strcmp);
     KVSpair *p; 
 
-    const struct data *fred = NULL;
+    struct data *fred = NULL;
     const struct data *bill = NULL;
 
     set(store,"FRED", fred);

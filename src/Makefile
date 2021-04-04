@@ -1,6 +1,6 @@
 
 BINS=tstDump
-CFLAGS=-g
+CFLAGS=-g -m32
 CC=gcc
 CPP=g++
 
@@ -13,10 +13,10 @@ all:	$(OBJ)
 tst:	$(BINS)
 
 dump.o:	dump.c
-	$(CC) -c -g dump.c -o dump.o
+	$(CC) $(CFLAGS) -c -g dump.c -o dump.o
 
 pubSub.o:	pubSub.c pubSub.h
-	$(CC) -c -g pubSub.c -o pubSub.o
+	$(CC) $(CFLAGS) -c -g pubSub.c -o pubSub.o
 
 tstDump:	tstDump.c dump.o
 	$(CC) $(CFLAGS) tstDump.c dump.o -o tstDump
