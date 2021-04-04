@@ -6,7 +6,7 @@ CPP=g++
 
 BINS=tstProto tstKVStore tstDump dbgTst
 
-OBJ=proto.o dump.o kvs.o db.o # espDb.o
+OBJ=pubSub.o proto.o dump.o kvs.o db.o # espDb.o
 
 all:	$(OBJ)
 
@@ -15,11 +15,14 @@ tst:	$(BINS)
 dump.o:	dump.c
 	$(CC) -c -g dump.c -o dump.o
 
+pubSub.o:	pubSub.c pubSub.h
+	$(CC) -c -g pubSub.c -o pubSub.o
+
 tstDump:	tstDump.c dump.o
 	$(CC) $(CFLAGS) tstDump.c dump.o -o tstDump
 
-tstProto:	tstProto.c proto.o dump.o Makefile kvs.o
-	$(CC) $(CFLAGS) tstProto.c proto.o dump.o kvs.o -o tstProto
+tstProto:	tstProto.c proto.o dump.o Makefile kvs.o pubSub.o
+	$(CC) $(CFLAGS) tstProto.c proto.o dump.o kvs.o pubSub.o -o tstProto
 
 dbgTst:	dbgTst.c kvs.o
 	$(CC) $(CFLAGS) -DDEBUG dbgTst.c kvs.o -o dbgTst

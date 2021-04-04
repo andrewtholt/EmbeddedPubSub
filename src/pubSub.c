@@ -5,18 +5,6 @@
 #include "kvs.h"
 #include "proto.h"
 #include "pubSub.h"
-/*
-struct data {
-    enum ptypes type;
-    void *value;
-
-    void (*getCB)(void *) ;
-    void (*setCB)(void *) ;
-    void (*subCB)(void*) ;
-    void (*unsubCB)(void *) ;
-
-};
-*/
 
 void setDefaultCB(struct data *res) {
     res->getCB = NULL;
@@ -113,30 +101,3 @@ const void *get(KVSstore *s, char *name) {
 
     return res;
 }
-
-int main() {
-    KVSstore *store = kvs_create(strcmp);
-    KVSpair *p; 
-
-    const struct data *fred = NULL;
-    const struct data *bill = NULL;
-
-    set(store,"FRED", fred);
-
-    bill = get(store,"FRED");
-
-    setBoolean(store,"BILL", true);
-
-    printf("Here\n");
-
-    bool t = getBoolean(store,"BILL");
-
-    printf("getByte 0x%02x\n", 42);
-    setByte(store, "JOE" , 42);
-
-    uint8_t r = getByte(store, "JOE");
-
-    printf("getByte 0x%02x\n", r);
-}
-
-

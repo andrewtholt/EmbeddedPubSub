@@ -29,10 +29,18 @@ enum ptypes {
 
 #define MAX_PACKET 32
 
-void interpPacket(uint8_t *ptr);
+void interpPacket(uint8_t *in_ptr, uint8_t *out_ptr);
+void interpSetPacket(uint8_t *ptr);
 
-void mkBoolCmd(char *key, bool state, uint8_t *out);
-void mkByteCmd(char *key, uint8_t state, uint8_t *out);
-void mkIntCmd(char *key, uint32_t state, uint8_t *out);
-void mkStringCmd(char *key, char *state, uint8_t *out);
+void mkGetBoolCmd(uint8_t sender, char *key, uint8_t *out);
+void mkSetBoolCmd(char *key, bool state, uint8_t *out);
+
+void mkGetByteCmd(uint8_t sender, char *key, uint8_t *out) ;
+void mkSetByteCmd(char *key, uint8_t state, uint8_t *out);
+
+void mkGetIntCmd(uint8_t sender, char *key, uint8_t *out) ;
+void mkSetIntCmd(char *key, uint32_t state, uint8_t *out);
+
+void mkGetStringCmd(uint8_t sender, char *key, uint8_t *out);
+void mkSetStringCmd(char *key, char *state, uint8_t *out);
 
