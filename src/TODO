@@ -1,0 +1,40 @@
+
+BEGIN
+    start TASK1
+    start TASK2
+
+AGAIN
+
+
+
+
+def TASK1
+    create Q
+    add Q to table
+
+    COUNT = 0
+
+    BEGIN
+        msg = waitForMsq( Q )
+        interp msg
+
+        display msg
+
+    AGAIN
+END
+
+def TASK2
+
+    wait for TASK1 Q in table 
+
+    create Q
+    add Q to table
+
+    COUNT = 0
+    BEGIN
+        COUNT++
+        sendMsg( table[TASK1], setMsg)
+        sleep 10
+
+    AGAIN
+END
