@@ -21,8 +21,8 @@ pubSub.o:	pubSub.c pubSub.h
 tstDump:	tstDump.c dump.o
 	$(CC) $(CFLAGS) tstDump.c dump.o -o tstDump
 
-tstProto:	tstProto.c proto.o dump.o Makefile kvs.o pubSub.o
-	$(CC) $(CFLAGS) tstProto.c proto.o dump.o kvs.o pubSub.o -o tstProto
+tstProto:	tstProto.c proto.o dump.o Makefile kvs.o pubSub.o Makefile
+	$(CC) $(CFLAGS) tstProto.c proto.o dump.o kvs.o pubSub.o -lrt -o tstProto
 
 dbgTst:	dbgTst.c kvs.o
 	$(CC) $(CFLAGS) -DDEBUG dbgTst.c kvs.o -o dbgTst
