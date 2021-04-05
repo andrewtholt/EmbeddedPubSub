@@ -14,6 +14,7 @@ enum cmd {
 
 enum tasks {
     DBG = 0,
+    TST,
     LAST_TASK
 };
 

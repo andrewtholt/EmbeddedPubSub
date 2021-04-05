@@ -6,9 +6,15 @@
 #include "dump.h"
 #include "kvs.h"
 
+#include <mqueue.h>
+
+#define MAX_THREADS 10
+
 KVSstore *store = NULL;
 
 int main() {
+
+    struct mq_attr tasks[MAX_THREADS] = { 0 };
 
     store = kvs_create(strcmp);
 
