@@ -1,7 +1,15 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifdef LINUX
+#include <mqueue.h>
+#endif
+
 #define MAX_TASK 8
+void setTaskEntry(uint8_t taskId, mqd_t mq) ;
+bool isTaskReady(uint8_t taskId) ;
+void *mkQueue(uint8_t taskId);
+
 // 
 // Get message int *msg, return length.  -ve indicates eror.
 //

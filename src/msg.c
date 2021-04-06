@@ -24,6 +24,15 @@ void setTaskEntry(uint8_t taskId, mqd_t mq) {
     // release lock here
 }
 
+bool isTaskReady(uint8_t taskId) {
+    bool ready=false;
+
+    // lock here
+    ready = (queue[taskId] == 0) ? false : true ;
+    // unlock here
+
+    return ready;
+}
 
 void *mkQueue(uint8_t taskId) {
 
