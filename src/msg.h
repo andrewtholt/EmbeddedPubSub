@@ -7,6 +7,7 @@
 
 #define MAX_TASK 8
 void setTaskEntry(uint8_t taskId, mqd_t mq) ;
+mqd_t getTaskEntry(uint8_t taskId);
 bool isTaskReady(uint8_t taskId) ;
 void *mkQueue(uint8_t taskId);
 

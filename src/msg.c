@@ -24,6 +24,21 @@ void setTaskEntry(uint8_t taskId, mqd_t mq) {
     // release lock here
 }
 
+#ifdef LINUX
+mqd_t getTaskEntry(uint8_t taskId) {
+    mqd_t ent = 0;
+
+    // Lock here
+    ent = queue[taskId];
+
+    // unlock here
+
+    return ent;
+}
+
+#else
+#endif
+
 bool isTaskReady(uint8_t taskId) {
     bool ready=false;
 
