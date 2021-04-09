@@ -54,6 +54,24 @@ mqd_t getTaskEntry(uint8_t taskId) {
     return ent;
 }
 
+bool waitUntilReady(uint8_t taskId) {
+    bool ready = false;
+
+    mqd_t q = -1;
+
+    while(1) {
+        q = getTaskEntry(taskId);
+
+        if ( q == 0) {
+            usleep(1000);
+        } else {
+            ready = true;
+            break;
+        }
+    }
+    return ready ;
+}
+
 #else
 #endif
 
@@ -93,10 +111,12 @@ mqd_t mkQueue(uint8_t taskId) {
     int exists = access(buffer, F_OK) ;    
     if( exists !=-1) {    
         printf("Queue %s already exists\n", buffer);    
-        mq = mq_open(buffer, O_RDWR | O_NONBLOCK, 0644, &attr);    
+//        mq = mq_open(buffer, O_RDWR | O_NONBLOCK, 0644, &attr);    
+        mq = mq_open(buffer, O_RDWR, 0644, &attr);    
     } else {    
         printf("Creating Q\n");    
-        mq = mq_open(buffer, O_CREAT | O_RDWR | O_NONBLOCK, 0644, &attr);    
+//        mq = mq_open(buffer, O_CREAT | O_RDWR | O_NONBLOCK, 0644, &attr);    
+        mq = mq_open(buffer, O_CREAT | O_RDWR, 0644, &attr);    
     }    
 
     if(mq == -1) {    

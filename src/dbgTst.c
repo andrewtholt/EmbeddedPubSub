@@ -120,25 +120,63 @@ const void *get(KVSstore *s, char *name) {
 void *Thread1(void *data) {
 
 //    mgd_t iam = getTaskEntry(1);
+    int rc = 0;
+    uint8_t msg[255];
+    int msgSize = sizeof(msg);
+    struct mq_attr attr;
+
     mqd_t iam = mkQueue(1);
 
     setTaskEntry(1, iam);
 
+    rc = mq_getattr(iam,&attr);
+
     while(1) {
-        printf("Thread 1 going to sleep\n");
-        sleep(10);
-        printf("Awake.\n");
+        printf("Thread 1 waiting for msg\n");
+
+        bzero(msg, msgSize);
+        rc = mq_receive(iam, msg, msgSize, 0);
+        if(rc < 0) {
+            perror("Thread1:");
+            exit(2);
+        } else {
+            printf("rx >%s<\n",msg);
+        }
     }
 }
 
 void *Thread2(void *data) {
+    struct mq_attr attr;
+
+    char buffer[32];
+
     mqd_t iam = mkQueue(2);
 
     setTaskEntry(2, iam);
 
+    mqd_t dest= -1;
+
+    int rc=-1;
+
+    if( !waitUntilReady(1) ) {
+        fprintf(stderr, "T2:waitUntilReady fail.\n");
+        exit(1);
+    }
+
+    dest = getTaskEntry(1);
+
+    rc = mq_getattr(dest,&attr);
+
+    int counter = 1;
     while(1) {
-        printf("Thread 2 going to sleep\n");
-        sleep(11);
+        bzero(buffer,32);
+        sprintf(buffer,"%04d",counter);
+
+        printf("tx %04d\n", counter);
+        rc = mq_send(dest, buffer, 32, 0);
+
+        counter++;
+        sleep(4);
         printf("Awake.\n");
     }
 }
@@ -152,9 +190,9 @@ int main() {
 
     pthread_t p_thread1;
 
-    int thr_id = pthread_create(&p_thread1, NULL, Thread1, (void*)NULL);
+    int thr_id = pthread_create(&p_thread1, NULL, Thread2, (void*)NULL);
 
-    Thread2(NULL);
+    Thread1(NULL);
 
     KVSstore *store = kvs_create(strcmp);
     KVSpair *p; 
