@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <pthread.h>     /* pthread functions and data structures */
 
 #include "kvs.h"
 #include "proto.h"
 #include "pubSub.h"
+#include "msg.h"
+#include <unistd.h>
 /*
 struct data {
     enum ptypes type;
@@ -114,7 +117,45 @@ const void *get(KVSstore *s, char *name) {
     return res;
 }
 
+void *Thread1(void *data) {
+
+//    mgd_t iam = getTaskEntry(1);
+    mqd_t iam = mkQueue(1);
+
+    setTaskEntry(1, iam);
+
+    while(1) {
+        printf("Thread 1 going to sleep\n");
+        sleep(10);
+        printf("Awake.\n");
+    }
+}
+
+void *Thread2(void *data) {
+    mqd_t iam = mkQueue(2);
+
+    setTaskEntry(2, iam);
+
+    while(1) {
+        printf("Thread 2 going to sleep\n");
+        sleep(11);
+        printf("Awake.\n");
+    }
+}
+
+
 int main() {
+
+    msgInit();
+
+    mqd_t queueId = getTaskEntry(0);
+
+    pthread_t p_thread1;
+
+    int thr_id = pthread_create(&p_thread1, NULL, Thread1, (void*)NULL);
+
+    Thread2(NULL);
+
     KVSstore *store = kvs_create(strcmp);
     KVSpair *p; 
 

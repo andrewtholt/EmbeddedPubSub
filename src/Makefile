@@ -6,11 +6,14 @@ CPP=g++
 
 BINS=tstProto tstKVStore tstDump dbgTst
 
-OBJ=pubSub.o proto.o dump.o kvs.o db.o # espDb.o
+OBJ=msg.o pubSub.o proto.o dump.o kvs.o db.o # espDb.o
 
 all:	$(OBJ)
 
 tst:	$(BINS)
+
+msg.o:	msg.c msg.h Makefile
+	$(CC) $(CFLAGS) -DLINUX -c -g msg.c -o msg.o
 
 dump.o:	dump.c
 	$(CC) $(CFLAGS) -c -g dump.c -o dump.o
@@ -24,8 +27,8 @@ tstDump:	tstDump.c dump.o
 tstProto:	tstProto.c proto.o dump.o Makefile kvs.o pubSub.o Makefile
 	$(CC) $(CFLAGS) tstProto.c proto.o dump.o kvs.o pubSub.o -lrt -o tstProto
 
-dbgTst:	dbgTst.c kvs.o
-	$(CC) $(CFLAGS) -DDEBUG dbgTst.c kvs.o -o dbgTst
+dbgTst:	dbgTst.c kvs.o msg.o
+	$(CC) $(CFLAGS) -DLINUX -DDEBUG dbgTst.c kvs.o msg.o -lpthread -lrt -o dbgTst
 
 help:
 	@echo "Help"

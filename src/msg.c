@@ -5,23 +5,39 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
+
 #include "msg.h"
 
 #ifdef LINUX
 #include <mqueue.h>
 #include <unistd.h>
+#include <string.h>
+#include <unistd.h>
+
+pthread_mutex_t queueLock;
 #endif
 
 #ifdef LINUX
+    pthread_mutex_t queueLock;
     mqd_t queue[MAX_TASK];
 #else
 void *queue[ MAX_TASK];
 #endif
 
+void msgInit() {
+#ifdef LINUX
+    pthread_mutex_init(&queueLock, NULL);
+    memset(queue,0,sizeof(queue));
+#endif
+}
+
 void setTaskEntry(uint8_t taskId, mqd_t mq) {
     // Acquire lock here
+    pthread_mutex_lock(&queueLock);
     queue[taskId] = mq;
     // release lock here
+    pthread_mutex_unlock(&queueLock);
 }
 
 #ifdef LINUX
@@ -29,9 +45,11 @@ mqd_t getTaskEntry(uint8_t taskId) {
     mqd_t ent = 0;
 
     // Lock here
+    pthread_mutex_lock(&queueLock);
     ent = queue[taskId];
 
     // unlock here
+    pthread_mutex_unlock(&queueLock);
 
     return ent;
 }
@@ -43,22 +61,24 @@ bool isTaskReady(uint8_t taskId) {
     bool ready=false;
 
     // lock here
+    pthread_mutex_lock(&queueLock);
     ready = (queue[taskId] == 0) ? false : true ;
+    pthread_mutex_unlock(&queueLock);
     // unlock here
 
     return ready;
 }
 
-void *mkQueue(uint8_t taskId) {
+mqd_t mkQueue(uint8_t taskId) {
 
-    void *ret = NULL;
     char buffer[16] = {0};
 
 #ifdef LINUX
 
     int msgSize = 255;
 
-    sprintf( buffer, "/dev/mqueue/%02x", taskId);
+//    sprintf( buffer, "/dev/mqueue/%02x", taskId);
+    sprintf( buffer, "/%02x", taskId);
 
     printf("Q name is >%s<\n", buffer);
 
@@ -86,7 +106,7 @@ void *mkQueue(uint8_t taskId) {
     }
 
 #endif
-    return ret;
+    return mq;
 }
 
 // 
