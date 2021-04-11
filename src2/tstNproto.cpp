@@ -31,7 +31,7 @@ int main() {
     dump(outPacket, 32);
 
     printf("Get Bool\n");
-    mkGetBoolCmd(1,"LED", outPacket);
+    tst.mkGetBoolCmd(1,(char *)"LED", outPacket);
     dump(outPacket, 32);
 
     printf("===================================\n");

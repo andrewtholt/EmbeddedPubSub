@@ -35,6 +35,9 @@ enum ptypes {
 
 class proto {
 
+    private:
+        void interpSetPacket(uint8_t *ptr, uint8_t len);
+
     protected:
         KVSstore *store = nullptr;
         std::string printCmd(enum cmd c) ;
@@ -42,7 +45,6 @@ class proto {
     public:
         proto();
         void interpPacket(uint8_t *in_ptr, uint8_t *out_ptr);
-        void interpSetPacket(uint8_t *ptr);
 
         void mkGetBoolCmd(uint8_t sender, char *key, uint8_t *out);
         void mkSetBoolCmd(char *key, bool state, uint8_t *out);

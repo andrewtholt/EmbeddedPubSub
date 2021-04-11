@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <string>
 #include <iostream>
+#include "dump.h"
 
 /***********************************************************************
  *  Method: proto::db
@@ -37,7 +38,7 @@ void proto::interpPacket(uint8_t *in_ptr, uint8_t *out_ptr) {
 
     switch(c) {
         case SET:
-            interpSetPacket(in_ptr);
+            interpSetPacket(in_ptr, packetLen);
             break;
         case GET:
             break;
@@ -52,9 +53,18 @@ void proto::interpPacket(uint8_t *in_ptr, uint8_t *out_ptr) {
  * Returns: void
  * Effects: 
  ***********************************************************************/
-void
-proto::interpSetPacket(uint8_t *ptr)
-{
+void proto::interpSetPacket(uint8_t *ptr, uint8_t len) {
+    char key[8] = {0};
+    uint8_t idx=3;
+    uint8_t klen = 0;
+
+    dump(ptr,len);
+
+    klen = ptr[idx++];
+    std::cout << "Key Len:" << std::to_string(klen ) << "\n";
+
+    memcpy(key, &ptr[idx], klen);
+
 }
 
 
@@ -64,9 +74,22 @@ proto::interpSetPacket(uint8_t *ptr)
  * Returns: void
  * Effects: 
  ***********************************************************************/
-void
-proto::mkGetBoolCmd(uint8_t sender, char *key, uint8_t *out)
-{
+void proto::mkGetBoolCmd(uint8_t sender, char *key, uint8_t *out) {
+    uint8_t size=0;
+    uint8_t idx=1;
+
+    memset(out,0,MAX_PACKET);
+
+    out[idx++] = GET;
+    out[idx++] = sender;
+    out[idx++] = strlen(key);
+
+    memcpy(&out[idx], key, strlen(key));
+    idx += strlen(key);
+    out[idx] = BOOL;
+
+    out[0] = idx;
+
 }
 
 
