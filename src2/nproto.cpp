@@ -17,7 +17,8 @@
  ***********************************************************************/
 proto::proto() {
     printf("Create proto\n");
-    store = kvs_create(strcmp);
+//    store = kvs_create(strcmp);
+//    Use the db class instead.
 }
 
 
@@ -57,6 +58,7 @@ void proto::interpSetPacket(uint8_t *ptr, uint8_t len) {
     char key[8] = {0};
     uint8_t idx=3;
     uint8_t klen = 0;
+    uint8_t dlen = 0;
 
     dump(ptr,len);
 
@@ -64,6 +66,19 @@ void proto::interpSetPacket(uint8_t *ptr, uint8_t len) {
     std::cout << "Key Len:" << std::to_string(klen ) << "\n";
 
     memcpy(key, &ptr[idx], klen);
+    std::cout << "Key    :" << key << "\n";
+
+
+    idx += klen;
+
+    dlen = ptr[idx++];
+
+    enum ptypes t =  (enum ptypes) ptr[idx++];
+
+    switch(t) {
+        case(BOOL):
+            break;
+    }
 
 }
 
