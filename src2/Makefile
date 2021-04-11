@@ -63,7 +63,7 @@ dbTst:	dbTst.cpp espDb.o db.o kvs.o
 	$(CPP) $(CFLAGS) dbTst.cpp kvs.o espDb.o  db.o -o dbTst
 
 clean:
-	rm -f *.o $(BINS) $(OBJS)
+	rm -f *.o $(BINS) $(OBJS) cscope.out
 
 
 
