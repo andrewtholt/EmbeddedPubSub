@@ -4,6 +4,7 @@ int main() {
     Small *myDb = new Small();
 
     bool failFlag = myDb->dbInstall("TEST","ING");  
+    failFlag = myDb->dbInstall("FRED","TEST_F");  
 
     printf("%d\n", failFlag);
 
@@ -12,5 +13,7 @@ int main() {
     nlist *rec;
 
     rec = myDb->dbLookupRec("TEST");
+
+    myDb->printDb();
 }
 

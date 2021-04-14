@@ -198,7 +198,7 @@ void Small::printDb() {
             printf((char *)"%4d: Empty\n",i);
         } else {
             do {
-            	printf((char *)"%4d:\n",i);
+            	printf((char *)"\nidx=%4d\n",i);
                 printf((char *)"Name         : %s\n", ptr->getName());
                 printf((char *)"Section      : ");
 
@@ -210,7 +210,7 @@ void Small::printDb() {
                 printf((char *)"Record       :%08x\n", ptr);
                 printf((char *)"Section Link :%08x\n", ptr->getSectionNext());
 
-                printf((char *)" Published   : ");
+                printf((char *)"Published    : ");
                 printBoolean(ptr->amIPublished());
 
                 printf((char *)"Private      : ");
