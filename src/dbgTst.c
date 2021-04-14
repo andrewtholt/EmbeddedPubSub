@@ -7,6 +7,7 @@
 #include "proto.h"
 #include "pubSub.h"
 #include "msg.h"
+#include "dump.h"
 #include <unistd.h>
 /*
 struct data {
@@ -157,6 +158,17 @@ void *Thread2(void *data) {
     mqd_t dest= -1;
 
     int rc=-1;
+    uint8_t outPacket[255]= { 0 };
+
+    KVSstore *store = kvs_create(strcmp);
+    KVSpair *p; 
+
+    struct data *fred = NULL;
+
+    setBoolean(store,"FRED", true);
+
+    mkGetBoolCmd(1,"FRED", outPacket);
+    dump(outPacket, 32);
 
     if( !waitUntilReady(1) ) {
         fprintf(stderr, "T2:waitUntilReady fail.\n");
@@ -187,6 +199,8 @@ int main() {
     msgInit();
 
     mqd_t queueId = getTaskEntry(0);
+
+    void *db = dbCreate();
 
     pthread_t p_thread1;
 

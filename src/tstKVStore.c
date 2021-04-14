@@ -25,7 +25,7 @@ int main() {
     kvs_put(store, "xyz", &t);
 
     void *x = (int *)&t;
-    x = (int *)kvs_get(store,"zzz");
+    x = (int *)kvs_get(store,"jkl");
 
     printf("x=0x%02x\n", *(int*)x);
     printf("t=0x%02x\n", t);

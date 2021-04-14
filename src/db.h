@@ -1,6 +1,9 @@
 #include "kvs.h"
 #include <stdint.h>
+
+#ifdef __cplusplus
 #include <iostream>
+
 
 enum dbError {
     OK=0,
@@ -21,4 +24,19 @@ class db {
 
         virtual void act(KVSkey *k,KVSvalue *v) { std::cout << "Original act\n"; };
 };
+#endif
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+void *dbCreate();
+
+#ifdef __cplusplus
+}
+#endif
+
+
+
 

@@ -71,4 +71,13 @@ int db::count() {
     return ( kvs_length(store));
 }
 
+extern "C" void *dbCreate() {
+    void *inst = NULL;
+
+    inst = new db;
+    return inst;
+}
+
+extern "C" void *dbStore(void *inst, char *name, struct data *v) {
+}
 
