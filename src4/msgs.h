@@ -34,6 +34,9 @@ extern "C" {
 
 #define SENDER_SIZE 32
 
+// 
+// Make command an enum, or uint8_t
+//
 #define MAX_CMD 8       // Length of longest command i.e. UNSUB
 #define MAX_KEY   16    // Length of longest key.
 #define MAX_VALUE 32    // Length of longest value.
