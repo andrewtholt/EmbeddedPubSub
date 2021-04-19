@@ -11,7 +11,10 @@
 #include "mngmt.h"
 
 using namespace std;
-mqd_t queue[MAX_TASK];
+// mqd_t queue[MAX_TASK];
+//
+
+mngmt *top = mngmt::Instance();
 
 struct data {
     ptypes type;
@@ -25,19 +28,14 @@ struct data {
 
 void *Thread1(void *data) {
 
-//    mgd_t iam = getTaskEntry(1);
     int rc = 0;
     uint8_t msg[255];
     int msgSize = sizeof(msg);
-    struct mq_attr attr;
     
-    mngmt me ;
+    bool initFailed = top->initTask(1);
 
-    mqd_t iam = mkQueue(1);    
+    mqd_t iam = top->getTaskEntry(1);
     
-    setTaskEntry(1, iam);
-    
-    rc = mq_getattr(iam,&attr);
     while(1) {
         printf("Thread 1 waiting for msg\n");
 
@@ -52,8 +50,44 @@ void *Thread1(void *data) {
     }
 }
 
+void *Thread2(void *data) {    
+    char buffer[32];    
+    
+    bool initFailed = top->initTask(1);
+    
+    if( !top->waitUntilReady(1) ) {    
+        fprintf(stderr, "T2:waitUntilReady fail.\n");    
+        exit(1);    
+    }
+
+    mqd_t dest = top->getTaskEntry(1);
+
+    int counter = 1;
+    while(1) {
+        bzero(buffer,32);
+        sprintf(buffer,"%04d",counter);
+
+        printf("tx %04d\n", counter);
+        int rc = mq_send(dest, buffer, 32, 0);
+
+        counter++;
+        sleep(4);
+        printf("Awake.\n");
+    }
+}
+
 
 int main() {
+
+    pthread_t t1Id;
+    pthread_t t2Id;
+
+    int thread2Status = pthread_create(&t1Id, NULL, *Thread2, NULL);
+
+    int thread1Status = pthread_create(&t1Id, NULL, *Thread1, NULL);
+
+    sleep(100);
+
     Small *myDb = new Small();
 
     bool failFlag = myDb->dbInstall("TEST","ING");  
