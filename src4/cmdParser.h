@@ -19,7 +19,7 @@
  */
 enum postParseAction {
 	PP_NULL=0,		// No further action.
-	PP_FREE_MEM		// Release the memory used for the message back top the pool
+	PP_FREE_MEM		// Release the memory used for the message back to the pool
 };
 
 typedef enum postParseAction postParseAction_t;

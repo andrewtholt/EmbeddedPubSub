@@ -43,7 +43,7 @@ extern "C" {
 
 struct payloadCmd {
     uint8_t fields; // <= 3
-    char cmd[MAX_CMD];
+    char cmd[MAX_CMD]; // TODO: change command from a string to an ENUM
     char key[MAX_KEY];
     char value[MAX_VALUE];
 };

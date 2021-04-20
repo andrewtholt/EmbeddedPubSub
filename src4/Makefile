@@ -9,7 +9,7 @@ BINS=tstMngmt tst
 # all:	cmdParser.o Small.o
 all:	$(BINS)
 
-tst:	tst.cpp cmdParser.o Small.o mngmt.o # comms.o
+tst:	tst.cpp cmdParser.o Small.o mngmt.o enums.h # comms.o
 	$(CPP) $(CPPFLAGS) $(DEFS) tst.cpp cmdParser.o Small.o mngmt.o -lrt -pthread -o tst
 
 cmdParser.o:	cmdParser.cpp msgs.h

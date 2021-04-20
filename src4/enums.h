@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <string>
 
-enum cmd {
+enum cmd : uint8_t {
     NOP = 0,
     GET,
     SET,
@@ -13,13 +13,13 @@ enum cmd {
     LAST_CMD
 };
 
-enum tasks {
+enum tasks : uint8_t {
     DBG = 0,
     TST,
     LAST_TASK
 };
 
-enum ptypes {
+enum ptypes : uint8_t {
     INVALID=0,
     BOOL,
     BYTE,
