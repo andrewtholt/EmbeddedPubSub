@@ -9,7 +9,7 @@
  * @file tasks.h
  * @brief Test
  **/
-
+#include "enums.h"
 
 #ifndef MSGS_H_   //1
 #define MSGS_H_
@@ -43,14 +43,16 @@ extern "C" {
 
 struct payloadCmd {
     uint8_t fields; // <= 3
-    char cmd[MAX_CMD]; // TODO: change command from a string to an ENUM
+    uint8_t cmd;
+//    char cmd[MAX_CMD]; // TODO: change command from a string to an ENUM
     char key[MAX_KEY];
     char value[MAX_VALUE];
 };
 
 struct payloadFs {
     uint8_t fields; // <= 3
-    char cmd[MAX_CMD];
+    uint8_t cmd;
+//    char cmd[MAX_CMD];
     void *buffer;
     uint16_t bufferLength;
     int16_t fd;
@@ -70,7 +72,8 @@ struct cmdMessage {
 
 #ifdef LINUX
 struct cmdMessage {
-    char sender[SENDER_SIZE];
+    tasks sender;
+//    char sender[SENDER_SIZE];
 //    struct payload message;
     union {
         struct payloadCmd message;

@@ -29,8 +29,13 @@ struct data {
 void *Thread1(void *data) {
 
     int rc = 0;
+    /*
     uint8_t msg[255];
     int msgSize = sizeof(msg);
+    */
+
+    int msgSize = sizeof(struct cmdMessage);
+    struct cmdMessage *msg = (struct cmdMessage *)malloc(msgSize);
     
     bool initFailed = top->initTask(1);
 

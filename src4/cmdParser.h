@@ -26,7 +26,7 @@ typedef enum postParseAction postParseAction_t;
 
 // #include "tasks.h"
 #include "Small.h"
-
+#include "enums.h"
 struct parser;
 #ifdef __cplusplus
 // All virtual methods return a failure flag set to true until
@@ -49,7 +49,8 @@ class parser {
         bool cmdPing(struct cmdMessage *,postParseAction_t *);
 
 #ifdef LINUX
-        virtual bool fromMe(struct cmdMessage *, const char *) { return true ;}
+//        virtual bool fromMe(struct cmdMessage *, const char *) { return true ;}
+        virtual bool fromMe(struct cmdMessage *, const tasks ) { return true ;}
 #endif
 
 #ifdef FREERTOS

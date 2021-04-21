@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <string>
 
+#ifndef __ENUMS
+#define __ENUMS
 enum cmd : uint8_t {
     NOP = 0,
     GET,
@@ -9,12 +11,15 @@ enum cmd : uint8_t {
     SUB,
     UNSUB,
     PING,
+    PONG,
     EXIT,
     LAST_CMD
 };
 
 enum tasks : uint8_t {
     DBG = 0,
+    TASK1,
+    TASK2,
     TST,
     LAST_TASK
 };
@@ -28,4 +33,4 @@ enum ptypes : uint8_t {
     JSON,
     LAST_TYPE
 };
-
+#endif

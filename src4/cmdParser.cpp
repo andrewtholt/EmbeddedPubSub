@@ -7,6 +7,9 @@
 
 #include "Small.h"
 #include "cmdParser.h"
+
+#include "enums.h"
+
 // #include "msgs.h"
 
 #ifndef SENDER_SIZE
@@ -65,8 +68,10 @@ void parser::setDontCreate() {
 bool parser::cmdPing(struct cmdMessage *m,postParseAction_t *a) {
     bool failFlag=true;
 
-    strcpy((char *)m->payload.message.cmd,(char *)"PONG");  // Acknowledge PING
-    failFlag = fromMe(m, (char *)m->sender);
+//    strcpy((char *)m->payload.message.cmd,(char *)"PONG");  // Acknowledge PING
+    m->payload.message.cmd = cmd::PONG ;  // Acknowledge PING
+// TODO: linuxParser
+//    failFlag = fromMe(m, (char *)m->sender);
 
     return failFlag;
 }
@@ -84,7 +89,8 @@ bool parser::cmdSub(struct cmdMessage *m,postParseAction_t *a) {
         rc=data->subscribe((void *)m->sender, m->payload.message.key);
 
         if ( rc == PS_OK) {
-        	failFlag=fromMe(m, (char *)m->sender);
+            // TODO See linuxParser
+//        	failFlag=fromMe(m, (char *)m->sender);
         }
     }
     return failFlag;
@@ -114,7 +120,8 @@ bool parser::cmdGet(struct cmdMessage *m, postParseAction_t *a) {
     char *v;
 
 #ifdef LINUX
-    char destination[SENDER_SIZE];
+//    char destination[SENDER_SIZE];
+    uint8_t destination = 0;
 #else
     QueueHandle_t destination;
 #endif
@@ -130,12 +137,14 @@ bool parser::cmdGet(struct cmdMessage *m, postParseAction_t *a) {
         strncpy(m->payload.message.value,v,MAX_VALUE);
     } 
 #ifdef LINUX
-    memcpy(destination, m->sender,SENDER_SIZE);
+//    memcpy(destination, m->sender,SENDER_SIZE);
+    destination=m->sender;
 #else
     destination=m->sender;
 #endif
 
-    rc=fromMe(m,destination);
+    // TODO See linuxParser
+//    rc=fromMe(m,destination);
 
     *a=PP_NULL; // No further action.
 
@@ -190,26 +199,27 @@ bool parser::parse(struct cmdMessage *m, postParseAction_t *act){
 
     switch ( m->payload.message.fields) {
         case 1:
-            if(!strcmp(m->payload.message.cmd, "PING" )) {
+//            if(!strcmp(m->payload.message.cmd, "PING" )) {
+            if(m->payload.message.cmd == (uint8_t)cmd::PING ) {
                 failFlag = cmdPing(m, act);
             }
-            if(!strcmp(m->payload.message.cmd, "PONG" )) {
+            if(m->payload.message.cmd == (uint8_t)cmd::PONG ) {
                 failFlag=false;
             }
             break;
         case 2: // GET, SUB
-            if(!strcmp(m->payload.message.cmd, "GET" )) {
+            if( m->payload.message.cmd == cmd::GET ) {
                 failFlag = cmdGet(m, act);
-            } else if(!strcmp(m->payload.message.cmd, "UNSUB" )) {
+            } else if( m->payload.message.cmd == cmd::UNSUB ) {
                 failFlag = cmdUnsub(m, act);
-            } else if(!strcmp(m->payload.message.cmd, "SUB" )) {
+            } else if( m->payload.message.cmd == cmd::SUB ) {
                 failFlag = cmdSub(m,act);
             } else {
                 failFlag = true;
             }
             break;
         case 3: // SET
-            if(!strcmp(m->payload.message.cmd, "SET" )) {
+            if( m->payload.message.cmd == cmd::SET ) {
                 failFlag = cmdSet(m, act);
             } else {
                 failFlag=true;
