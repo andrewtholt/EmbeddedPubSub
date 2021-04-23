@@ -45,7 +45,6 @@ Small::Small() {
 #endif
 
 #ifdef FREERTOS
-//    SemaphoreHandle_t dbLock = xSemaphoreCreateMutex();
      dbLock = xSemaphoreCreateMutex();
 #endif
 
@@ -242,7 +241,6 @@ nlist *Small::dbLookupRec( const char *n) {
 #endif
 
 #ifdef FREERTOS
-//    xSemaphoreTake(dbLock,portMAX_DELAY);
     osSemaphoreWait(dbLock, osWaitForever);
 #endif
 
@@ -261,7 +259,6 @@ nlist *Small::dbLookupRec( const char *n) {
     pthread_mutex_unlock(&dbLock);
 #endif
 #ifdef FREERTOS
-//    xSemaphoreGive(dbLock);
     osSemaphoreRelease(dbLock);
 #endif
     return ptr;
