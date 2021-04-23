@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "mngmt.h"
 
+#include "msgs.h"
 #include <mqueue.h>
 
 // Global static pointer used to ensure a single instance of the class.
@@ -81,7 +82,7 @@ mqd_t mngmt::mkQueue(uint8_t taskId) {
 
 #ifdef LINUX
 
-    int msgSize = 255;
+    int msgSize = sizeof(struct cmdMessage);
 
     //    sprintf( buffer, "/dev/mqueue/%02x", taskId);
     sprintf( buffer, "/%02x", taskId);

@@ -3,12 +3,15 @@
 #include <cstdint>
 #include <pthread.h>	/* pthread functions and data structures */
 #include <strings.h>
-
+#include <time.h>
 #include "enums.h"
 #include "Small.h"
 #include "msgs.h"
 #include "comms.h"
 #include "mngmt.h"
+
+#include "cmdParser.h"
+#include "linuxParser.h"
 
 using namespace std;
 // mqd_t queue[MAX_TASK];
@@ -25,21 +28,30 @@ struct data {
     };
 };
 
+void addTime(struct timespec *tm, int msec) {
+    clock_gettime(CLOCK_MONOTONIC, tm);
+
+    tm->tv_nsec += msec * 1000000;
+    if( tm->tv_nsec >= 1000000000 ) { 
+          tm->tv_nsec -= 1000000000;
+            tm->tv_sec++;
+    }   
+}
+
+
 
 void *Thread1(void *data) {
 
     int rc = 0;
-    /*
-    uint8_t msg[255];
-    int msgSize = sizeof(msg);
-    */
+    struct timespec tm;
 
     int msgSize = sizeof(struct cmdMessage);
     struct cmdMessage *msg = (struct cmdMessage *)malloc(msgSize);
-    
-    bool initFailed = top->initTask(1);
+   
+    linuxParser *msgParser = new linuxParser();
 
-    mqd_t iam = top->getTaskEntry(1);
+    bool initFailed = top->initTask(tasks::TASK1);
+    mqd_t iam = top->getTaskEntry(tasks::TASK1);
     
     while(1) {
         printf("Thread 1 waiting for msg\n");
@@ -50,30 +62,54 @@ void *Thread1(void *data) {
             perror("Thread1:");
             exit(2);
         } else {
-            printf("rx >%s<\n",msg);
+            bool failFlag = msgParser->parse(msg, NULL);
+            msgParser -> msgDump(msg);
         }
     }
 }
 
 void *Thread2(void *data) {    
-    char buffer[32];    
+
+    struct cmdMessage outMsg;
+    struct cmdMessage inMsg;
+    int rc=-1;
+
+    uint8_t msgSize = sizeof(outMsg);
+    struct timespec tm;
+
+    linuxParser *msgParser = new linuxParser();
+
+    bool initFailed = top->initTask(tasks::TASK2);
+    mqd_t iam = top->getTaskEntry(tasks::TASK2);
     
-    bool initFailed = top->initTask(1);
     
-    if( !top->waitUntilReady(1) ) {    
+    if( !top->waitUntilReady(tasks::TASK1) ) {    
         fprintf(stderr, "T2:waitUntilReady fail.\n");    
         exit(1);    
     }
 
-    mqd_t dest = top->getTaskEntry(1);
+    mqd_t dest = top->getTaskEntry(tasks::TASK1);
 
     int counter = 1;
     while(1) {
-        bzero(buffer,32);
-        sprintf(buffer,"%04d",counter);
+        addTime(&tm, 400);
 
-        printf("tx %04d\n", counter);
-        int rc = mq_send(dest, buffer, 32, 0);
+        bzero(&outMsg,msgSize);
+        bzero(&inMsg,msgSize);
+
+        outMsg.sender = iam;
+        outMsg.payload.message.fields = 1;
+        outMsg.payload.message.cmd = cmdDef::PING;
+
+        rc = mq_timedreceive(iam, (char *)&inMsg, msgSize, 0,&tm);
+        if(rc < 0) {
+            printf("T2:Waiting over %d\n",rc);
+        } else {
+            bool failFlag = msgParser->parse(&inMsg, NULL);
+            msgParser->msgDump(&inMsg);
+        }
+
+        int rc = mq_send(dest, (char *)&outMsg, msgSize, 0);
 
         counter++;
         sleep(4);

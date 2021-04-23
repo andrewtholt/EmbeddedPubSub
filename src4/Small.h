@@ -12,6 +12,7 @@
 #endif
 
 #include "msgs.h"
+#include "enums.h"
 
 #define MAX_NAME 32
 #define MAX_DEF 32
@@ -65,7 +66,7 @@ class Small {
         // dest & cmd MUST be set to point to a string.
         // key and value may be NULL;
 #ifdef LINUX
-        bool (*commsCallback)( const char *dest, const char *cmd, const char *key, const char *value) ;
+        bool (*commsCallback)( const mqd_t dest, const enum cmdDef cmd, const char *key, const char *value) ;
 #else
         bool (*commsCallback)( const QueueHandle_t dest, const char *cmd, const char *key, const char *value) ;
 #endif
@@ -179,7 +180,7 @@ class Small {
         bool dbLookupBool(char *name, bool dflt);
 
 #ifdef LINUX
-        bool setCommsCallback(bool (*cb)(const char *, const char *, const char *, const char *));
+        bool setCommsCallback(bool (*cb)(const mqd_t, const enum cmdDef , const char *, const char *));
 #else
         bool setCommsCallback(bool (*cb)(const QueueHandle_t , const char *, const char *, const char *));
 #endif

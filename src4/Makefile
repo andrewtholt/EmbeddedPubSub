@@ -9,8 +9,11 @@ BINS=tstMngmt tst
 # all:	cmdParser.o Small.o
 all:	$(BINS)
 
-tst:	tst.cpp cmdParser.o Small.o mngmt.o enums.h # comms.o
-	$(CPP) $(CPPFLAGS) $(DEFS) tst.cpp cmdParser.o Small.o mngmt.o -lrt -pthread -o tst
+tst:	tst.cpp cmdParser.o linuxParser.o Small.o mngmt.o enums.h # comms.o
+	$(CPP) $(CPPFLAGS) $(DEFS) cmdParser.o linuxParser.o Small.o mngmt.o tst.cpp -lrt -pthread -o tst
+
+tstParser:	tstParser.cpp cmdParser.o linuxParser.o Small.o mngmt.o enums.h # comms.o
+	$(CPP) $(CPPFLAGS) $(DEFS) tstParser.cpp cmdParser.o linuxParser.o Small.o mngmt.o -lrt -pthread -o tstParser
 
 cmdParser.o:	cmdParser.cpp msgs.h
 	$(CPP) $(CPPFLAGS) $(DEFS) -c cmdParser.cpp -o cmdParser.o
@@ -26,6 +29,9 @@ mngmt.o: mngmt.cpp mngmt.h
 
 tstMngmt:	mngmt.o tstMngmt.cpp
 	$(CPP) $(CPPFLAGS) $(DEFS) tstMngmt.cpp mngmt.o -lrt -o tstMngmt
+
+linuxParser.o:  linuxParser.cpp cmdParser.o cmdParser.h linuxParser.h
+	$(CPP) $(CPPFLAGS) $(DEFS) -fpic -g -c linuxParser.cpp cmdParser.o -o linuxParser.o
 
 clean:
 	rm -f *.o cscope.out

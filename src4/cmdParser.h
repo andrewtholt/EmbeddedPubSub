@@ -175,6 +175,7 @@ class parser {
          *
          * _____
          */
+        void msgDump(struct cmdMessage *ptr) ;
         ~parser();
         virtual char *version() { return (char *)"Version:cmdParser"; }
         /* 

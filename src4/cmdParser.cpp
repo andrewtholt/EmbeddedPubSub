@@ -37,7 +37,8 @@ void parser::commonInit() {
 
 parser::parser() {
     commonInit();
-    //    data = newSmall();
+    std::cout << "Creating db\n" ;
+    data = new Small();
 }
 
 parser::parser( Small *db) {
@@ -69,7 +70,7 @@ bool parser::cmdPing(struct cmdMessage *m,postParseAction_t *a) {
     bool failFlag=true;
 
 //    strcpy((char *)m->payload.message.cmd,(char *)"PONG");  // Acknowledge PING
-    m->payload.message.cmd = cmd::PONG ;  // Acknowledge PING
+    m->payload.message.cmd = cmdDef::PONG ;  // Acknowledge PING
 // TODO: linuxParser
 //    failFlag = fromMe(m, (char *)m->sender);
 
@@ -188,6 +189,13 @@ bool parser::cmdSet(struct cmdMessage *m, postParseAction_t *a) {
     return failFlag;
 }
 
+void parser::msgDump(struct cmdMessage *ptr) {
+    printf("Sent by     : %d\n",ptr->sender);
+    printf("Field Count : %d\n",ptr->payload.message.fields);
+    printf("Command     : %d\n",ptr->payload.message.cmd);
+    printf("Key         : %s\n",ptr->payload.message.key);
+    printf("Value       : %s\n",ptr->payload.message.value);
+}
 
 bool parser::parse(struct cmdMessage *m, postParseAction_t *act){
     bool failFlag=true;
@@ -200,26 +208,26 @@ bool parser::parse(struct cmdMessage *m, postParseAction_t *act){
     switch ( m->payload.message.fields) {
         case 1:
 //            if(!strcmp(m->payload.message.cmd, "PING" )) {
-            if(m->payload.message.cmd == (uint8_t)cmd::PING ) {
+            if(m->payload.message.cmd == (uint8_t)cmdDef::PING ) {
                 failFlag = cmdPing(m, act);
             }
-            if(m->payload.message.cmd == (uint8_t)cmd::PONG ) {
+            if(m->payload.message.cmd == (uint8_t)cmdDef::PONG ) {
                 failFlag=false;
             }
             break;
         case 2: // GET, SUB
-            if( m->payload.message.cmd == cmd::GET ) {
+            if( m->payload.message.cmd == cmdDef::GET ) {
                 failFlag = cmdGet(m, act);
-            } else if( m->payload.message.cmd == cmd::UNSUB ) {
+            } else if( m->payload.message.cmd == cmdDef::UNSUB ) {
                 failFlag = cmdUnsub(m, act);
-            } else if( m->payload.message.cmd == cmd::SUB ) {
+            } else if( m->payload.message.cmd == cmdDef::SUB ) {
                 failFlag = cmdSub(m,act);
             } else {
                 failFlag = true;
             }
             break;
         case 3: // SET
-            if( m->payload.message.cmd == cmd::SET ) {
+            if( m->payload.message.cmd == cmdDef::SET ) {
                 failFlag = cmdSet(m, act);
             } else {
                 failFlag=true;
@@ -233,6 +241,8 @@ bool parser::parse(struct cmdMessage *m, postParseAction_t *act){
 
     return failFlag;
 }
+
+
 // #endif
 
 extern "C" class Small *parserGetDb(struct parser *p) {

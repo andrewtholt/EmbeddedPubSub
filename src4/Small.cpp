@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "Small.h"
+#include "enums.h"
 #ifdef LINUX
        #include <sys/types.h>
        #include <sys/stat.h>
@@ -52,6 +53,8 @@ Small::Small() {
 
     subCount = 0;
     // globalCallback=NULL;
+    
+    // TODO: Set default callback
     commsCallback=NULL;
 
 //    freeList = (nlist **)malloc((unsigned int)(sizeof(nlist) * MAX_REC));
@@ -397,7 +400,7 @@ char *Small::dbLookup( const char *n) {
 
 
 #ifdef LINUX
-bool Small::setCommsCallback(bool (*cb)(const char *dest, const char *cmd, const char *key, const char *value)) {
+bool Small::setCommsCallback(bool (*cb)(const mqd_t , const enum cmdDef cmd, const char *key, const char *value)) {
 #else
 bool Small::setCommsCallback(bool (*cb)(const QueueHandle_t dest, const char *cmd, const char *key, const char *value)) {
 #endif
@@ -566,8 +569,10 @@ bool Small::dbInstall(const char *n, const char *d) {
 
             for(i=0;i<MAX_SUB;i++) {
 #ifdef LINUX
-                if( strlen(v->subscriber[i].name ) > 0) {
-                    rc=(*(commsCallback))(v->subscriber[i].name,(char *)"SET", n, (char *)d) ;
+//                if( strlen(v->subscriber[i].name ) > 0) {
+                if( v->subscriber[i].pipe  > 0) {
+//                    rc=(*(commsCallback))(v->subscriber[i].name,cmdDef::SET, n, (char *)d) ;
+                    rc=(*(commsCallback))(v->subscriber[i].pipe,cmdDef::SET, n, (char *)d) ;
                 }
 #else
                 if( v->subscriber[i].pipe != 0) {

@@ -4,7 +4,7 @@
 
 #ifndef __ENUMS
 #define __ENUMS
-enum cmd : uint8_t {
+enum cmdDef : uint8_t {
     NOP = 0,
     GET,
     SET,
@@ -17,7 +17,8 @@ enum cmd : uint8_t {
 };
 
 enum tasks : uint8_t {
-    DBG = 0,
+    NOREPLY = 0,
+    DBG = 1,
     TASK1,
     TASK2,
     TST,

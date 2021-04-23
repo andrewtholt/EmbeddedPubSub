@@ -43,15 +43,15 @@ extern "C" {
 
 struct payloadCmd {
     uint8_t fields; // <= 3
-    uint8_t cmd;
-//    char cmd[MAX_CMD]; // TODO: change command from a string to an ENUM
+    enum cmdDef cmd;
+
     char key[MAX_KEY];
     char value[MAX_VALUE];
 };
 
 struct payloadFs {
     uint8_t fields; // <= 3
-    uint8_t cmd;
+    mqd_t cmd;
 //    char cmd[MAX_CMD];
     void *buffer;
     uint16_t bufferLength;
@@ -72,9 +72,8 @@ struct cmdMessage {
 
 #ifdef LINUX
 struct cmdMessage {
-    tasks sender;
-//    char sender[SENDER_SIZE];
-//    struct payload message;
+    mqd_t sender ;
+
     union {
         struct payloadCmd message;
     } payload;
