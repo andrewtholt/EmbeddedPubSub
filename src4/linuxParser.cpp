@@ -13,6 +13,8 @@ linuxParser::linuxParser() {
     commonInit();
 
     data = new Small();
+    data->setCommsCallback(linuxParser::commsCallback);
+    printf("\nLinux parser ready\n\n");
 
 }
 linuxParser::linuxParser(Small *db) {
@@ -91,12 +93,12 @@ bool linuxParser::commsCallback(const mqd_t dest, const enum cmdDef c, const cha
         //
         // Check failFlag to ensure a valid message.
         //
-        if(failFlag == false) {
+//        if(failFlag == false) {
             // 
             // TODO dest is the mq file descriptor, so no need.
             // to open and close.
             //
-            perror("Failed to open destination message Q");
+//            perror("Failed to open destination message Q");
             failFlag = true ;
             if( dest >0) {
                 // Q open, so send message
@@ -105,10 +107,11 @@ bool linuxParser::commsCallback(const mqd_t dest, const enum cmdDef c, const cha
                     perror("Failed to send message to Q");
                     failFlag = true;
                 } else {
+                    fprintf(stderr, "Message sent to %d\n", dest);
                     failFlag = false;
                 }
             }
-        }
+//        }
     }
     return failFlag;
 }
@@ -120,11 +123,14 @@ bool linuxParser::fromMe(struct cmdMessage *m, const mqd_t to) {
     mqd_t mq;
     char *v;
 
+    printf("linuxParser::fromMe\n");
+    /*
     m->payload.message.fields = 3;
 
     m->sender == iam;
     m->payload.message.cmd = cmdDef::SET;
     v=data->dbLookup(m->payload.message.key);
+    */
 
     if(v != NULL) {
         strncpy(m->payload.message.value,v,sizeof(m->payload.message.value));

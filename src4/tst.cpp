@@ -52,6 +52,8 @@ void *Thread1(void *data) {
 
     bool initFailed = top->initTask(tasks::TASK1);
     mqd_t iam = top->getTaskEntry(tasks::TASK1);
+
+    msgParser->setIam(iam);
     
     while(1) {
         printf("Thread 1 waiting for msg\n");
@@ -63,13 +65,20 @@ void *Thread1(void *data) {
             exit(2);
         } else {
             bool failFlag = msgParser->parse(msg, NULL);
-            msgParser -> msgDump(msg);
+            if(failFlag) {
+                printf("parse failed\n");
+            } else {
+                printf("parse success\n");
+                msgParser->msgDump(msg);
+            }
+
         }
     }
 }
 
 void *Thread2(void *data) {    
 
+//    struct cmdMessage outMsg;
     struct cmdMessage outMsg;
     struct cmdMessage inMsg;
     int rc=-1;
@@ -129,6 +138,7 @@ int main() {
 
     sleep(100);
 
+    /*
     Small *myDb = new Small();
 
     bool failFlag = myDb->dbInstall("TEST","ING");  
@@ -143,5 +153,6 @@ int main() {
     rec = myDb->dbLookupRec("TEST");
 
     myDb->printDb();
+    */
 }
 

@@ -69,10 +69,14 @@ void parser::setDontCreate() {
 bool parser::cmdPing(struct cmdMessage *m,postParseAction_t *a) {
     bool failFlag=true;
 
-//    strcpy((char *)m->payload.message.cmd,(char *)"PONG");  // Acknowledge PING
     m->payload.message.cmd = cmdDef::PONG ;  // Acknowledge PING
+
+    printf("%d\n", (int)m->payload.message.cmd);
+    printf("%d\n", (int)cmdDef::PONG);
 // TODO: linuxParser
 //    failFlag = fromMe(m, (char *)m->sender);
+    failFlag = fromMe(m, m->sender);
+    failFlag = false;
 
     return failFlag;
 }
@@ -165,7 +169,7 @@ bool parser::cmdOpen(struct cmdMessage *m, postParseAction_t *a) {
 bool parser::cmdSet(struct cmdMessage *m, postParseAction_t *a) {
     bool failFlag=true;
 
-    *a=PP_NULL;
+//    *a=PP_NULL;
 
     if(dontCreate) {
         if( !data->dbLookup(m->payload.message.key)) {
@@ -185,7 +189,7 @@ bool parser::cmdSet(struct cmdMessage *m, postParseAction_t *a) {
         failFlag=data->dbInstall(m->payload.message.key, m->payload.message.value);
     }
 //    *a=PP_FREE_MEM;
-    *a=PP_NULL;
+//    *a=PP_NULL;
     return failFlag;
 }
 
@@ -193,8 +197,19 @@ void parser::msgDump(struct cmdMessage *ptr) {
     printf("Sent by     : %d\n",ptr->sender);
     printf("Field Count : %d\n",ptr->payload.message.fields);
     printf("Command     : %d\n",ptr->payload.message.cmd);
-    printf("Key         : %s\n",ptr->payload.message.key);
-    printf("Value       : %s\n",ptr->payload.message.value);
+
+    if(ptr->payload.message.fields > 1 ) {
+        printf("Key         : %s\n",ptr->payload.message.key);
+    } else {
+        printf("Key         : INVALID\n");
+    }
+
+
+    if( ptr->payload.message.fields > 2 ) {
+        printf("Value       : %s\n",ptr->payload.message.value);
+    } else {
+        printf("Value       : INVALID\n");
+    }
 }
 
 bool parser::parse(struct cmdMessage *m, postParseAction_t *act){

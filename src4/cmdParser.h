@@ -50,7 +50,7 @@ class parser {
 
 #ifdef LINUX
 //        virtual bool fromMe(struct cmdMessage *, const char *) { return true ;}
-        virtual bool fromMe(struct cmdMessage *, const tasks ) { return true ;}
+        virtual bool fromMe(struct cmdMessage *, const mqd_t ) { return true ;}
 #endif
 
 #ifdef FREERTOS
