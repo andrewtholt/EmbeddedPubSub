@@ -222,12 +222,12 @@ bool parser::parse(struct cmdMessage *m, postParseAction_t *act){
 
     switch ( m->payload.message.fields) {
         case 1:
-//            if(!strcmp(m->payload.message.cmd, "PING" )) {
             if(m->payload.message.cmd == (uint8_t)cmdDef::PING ) {
                 failFlag = cmdPing(m, act);
-            }
-            if(m->payload.message.cmd == (uint8_t)cmdDef::PONG ) {
+            } else if(m->payload.message.cmd == (uint8_t)cmdDef::PONG ) {
                 failFlag=false;
+            } else {
+                failFlag = true;
             }
             break;
         case 2: // GET, SUB
@@ -252,7 +252,6 @@ bool parser::parse(struct cmdMessage *m, postParseAction_t *act){
             failFlag=true;
             break;
     }
-
 
     return failFlag;
 }

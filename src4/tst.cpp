@@ -38,7 +38,39 @@ void addTime(struct timespec *tm, int msec) {
     }   
 }
 
+void cmdToString(enum cmdDef c) {
 
+    switch(c) {
+        case(cmdDef::NOP):
+            printf("NOP");
+            break;
+        case(cmdDef::GET):
+            printf("GET");
+            break;
+        case(cmdDef::SET):
+            printf("SET");
+            break;
+        case(cmdDef::SUB):
+            printf("SUB");
+            break;
+        case(cmdDef::UNSUB):
+            printf("UNSUB");
+            break;
+        case(cmdDef::PING):
+            printf("PING");
+            break;
+        case(cmdDef::PONG):
+            printf("PONG");
+            break;
+        case(cmdDef::EXIT):
+            printf("EXIT");
+            break;
+        default:
+            printf("UNKNOWN");
+            break;
+    }
+
+}
 
 void *Thread1(void *data) {
 
@@ -69,7 +101,10 @@ void *Thread1(void *data) {
                 printf("parse failed\n");
             } else {
                 printf("parse success\n");
-                msgParser->msgDump(msg);
+                printf("T1RX CMD->");
+                cmdToString(msg->payload.message.cmd);
+                printf("\n");
+//                msgParser->msgDump(msg);
             }
 
         }
@@ -116,7 +151,14 @@ void *Thread2(void *data) {
         } else {
             bool failFlag = msgParser->parse(&inMsg, NULL);
             msgParser->msgDump(&inMsg);
+            printf("T2:RX CMD->");
+            cmdToString(outMsg.payload.message.cmd);
+            printf("\n");
         }
+
+        printf("TX CMD->");
+        cmdToString(outMsg.payload.message.cmd);
+        printf("\n");
 
         int rc = mq_send(dest, (char *)&outMsg, msgSize, 0);
 
